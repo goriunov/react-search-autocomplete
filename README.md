@@ -12,6 +12,6 @@ $ yarn add react-search-autocomplete-rev
 
 ### Changes
 
-* Support React 19
+* Remove React version limitation
 * Add props `hideResultsOnBlur`, set `false` to keep results open when input is blurred
 * Support `Escape` key to close results
