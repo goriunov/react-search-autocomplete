@@ -6,10 +6,12 @@ import { SearchIcon } from './SearchIcon'
 interface SearchInputProps {
   searchString: string
   setSearchString: ChangeEventHandler<HTMLInputElement>
-  setHighlightedItem: Function
+
   eraseResults: Function
   autoFocus: boolean
+  hideResultsOnBlur?: boolean
   onFocus: FocusEventHandler<HTMLInputElement>
+  onKeyDown: Function
   onClear: Function
   placeholder: string
   showIcon: boolean
@@ -20,12 +22,13 @@ interface SearchInputProps {
 export default function SearchInput({
   searchString,
   setSearchString,
-  setHighlightedItem,
+  onKeyDown,
   eraseResults,
   autoFocus,
   onFocus,
   onClear,
   placeholder,
+  hideResultsOnBlur = false,
   showIcon = true,
   showClear = true,
   maxLength
@@ -58,8 +61,8 @@ export default function SearchInput({
         onFocus={handleOnFocus}
         placeholder={placeholder}
         autoFocus={autoFocus}
-        onBlur={() => eraseResults()}
-        onKeyDown={(event) => setHighlightedItem({ event })}
+        onBlur={() => (hideResultsOnBlur ? eraseResults() : null)}
+        onKeyDown={(event) => onKeyDown(event)}
         data-test="search-input"
         {...maxLengthProperty}
       />

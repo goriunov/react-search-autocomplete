@@ -34,6 +34,7 @@ export interface ReactSearchAutocompleteProps<T> {
   resultStringKeyName?: string
   inputSearchString?: string
   formatResult?: Function
+  hideResultsOnBlur?: boolean
   showNoResults?: boolean
   showNoResultsText?: string
   showItemsOnFocus?: boolean
@@ -59,6 +60,7 @@ export default function ReactSearchAutocomplete<T>({
   resultStringKeyName = 'name',
   inputSearchString = '',
   formatResult,
+  hideResultsOnBlur = true,
   showNoResults = true,
   showNoResultsText = 'No results',
   showItemsOnFocus = false,
@@ -114,19 +116,30 @@ export default function ReactSearchAutocomplete<T>({
   }, [showItemsOnFocus, results, searchString, hasFocus])
 
   useEffect(() => {
-    const handleDocumentClick = () => {
-      eraseResults()
-      setHasFocus(false)
+    if (hideResultsOnBlur) {
+      const handleDocumentClick = () => {
+        eraseResults()
+        setHasFocus(false)
+      }
+
+      document.addEventListener('click', handleDocumentClick)
+
+      return () => document.removeEventListener('click', handleDocumentClick)
     }
-
-    document.addEventListener('click', handleDocumentClick)
-
-    return () => document.removeEventListener('click', handleDocumentClick)
   }, [])
 
   const handleOnFocus = (event: FocusEvent<HTMLInputElement>) => {
     onFocus(event)
     setHasFocus(true)
+  }
+
+  const handleOnKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    handleSetHighlightedItem({ event })
+
+    if (event.key === 'Escape') {
+      eraseResults()
+      setHasFocus(false)
+    }
   }
 
   const callOnSearch = (keyword: string) => {
@@ -237,7 +250,7 @@ export default function ReactSearchAutocomplete<T>({
             placeholder={placeholder}
             showIcon={showIcon}
             showClear={showClear}
-            setHighlightedItem={handleSetHighlightedItem}
+            onKeyDown={handleOnKeyDown}
             maxLength={maxLength}
           />
           <Results
