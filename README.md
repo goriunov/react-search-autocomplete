@@ -14,4 +14,5 @@ $ yarn add react-search-autocomplete-rev
 
 * Remove React version limitation
 * Add props `hideResultsOnBlur`, set `false` to keep results open when input is blurred
+* Add props `disableFuse`, set `true` to disable Fuse search. It is useful for implementing remote search.
 * Support `Escape` key to close results

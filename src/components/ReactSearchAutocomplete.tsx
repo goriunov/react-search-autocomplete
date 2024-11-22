@@ -18,6 +18,7 @@ export const MAX_RESULTS = 10
 
 export interface ReactSearchAutocompleteProps<T> {
   items: T[]
+  disableFuse?: boolean
   fuseOptions?: Fuse.IFuseOptions<T>
   inputDebounce?: number
   onSearch?: (keyword: string, results: T[]) => void
@@ -44,6 +45,7 @@ export interface ReactSearchAutocompleteProps<T> {
 
 export default function ReactSearchAutocomplete<T>({
   items = [],
+  disableFuse = false,
   fuseOptions = defaultFuseOptions,
   inputDebounce = DEFAULT_INPUT_DEBOUNCE,
   onSearch = () => {},
@@ -83,16 +85,24 @@ export default function ReactSearchAutocomplete<T>({
 
   useEffect(() => {
     setSearchString(inputSearchString)
-    const timeoutId = setTimeout(() => setResults(fuseResults(inputSearchString)), 0)
+    const timeoutId = setTimeout(
+      () => setResults(disableFuse ? items : fuseResults(inputSearchString)),
+      0
+    )
 
     return () => clearTimeout(timeoutId)
   }, [inputSearchString])
 
   useEffect(() => {
-    searchString?.length > 0 &&
-      results &&
-      results?.length > 0 &&
-      setResults(fuseResults(searchString))
+    // on results?.length > 0
+    if (disableFuse) {
+      setResults(items)
+    } else {
+      searchString?.length > 0 &&
+        results &&
+        results?.length > 0 &&
+        setResults(fuseResults(searchString))
+    }
   }, [items])
 
   useEffect(() => {
@@ -145,9 +155,13 @@ export default function ReactSearchAutocomplete<T>({
   const callOnSearch = (keyword: string) => {
     let newResults: T[] = []
 
-    keyword?.length > 0 && (newResults = fuseResults(keyword))
+    if (disableFuse) {
+      setResults(items)
+    } else {
+      keyword?.length > 0 && (newResults = fuseResults(keyword))
+      setResults(newResults)
+    }
 
-    setResults(newResults)
     onSearch(keyword, newResults)
     setIsTyping(false)
   }
