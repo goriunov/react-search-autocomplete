@@ -21,7 +21,7 @@ export interface ReactSearchAutocompleteProps<T> {
   disableFuse?: boolean
   fuseOptions?: Fuse.IFuseOptions<T>
   inputDebounce?: number
-  onSearch?: (keyword: string, results: T[]) => void
+  onSearch?: (keyword: string, results: T[], keyCode: number) => void
   onHover?: (result: T) => void
   onSelect?: (result: T) => void
   onFocus?: FocusEventHandler<HTMLInputElement>
@@ -162,7 +162,7 @@ export default function ReactSearchAutocomplete<T>({
       setResults(newResults)
     }
 
-    onSearch(keyword, newResults)
+    onSearch(keyword, newResults, 0)
     setIsTyping(false)
   }
 
@@ -227,9 +227,9 @@ export default function ReactSearchAutocomplete<T>({
             event.preventDefault()
             onSelect(results[highlightedItem])
             setSearchString(results[highlightedItem][resultStringKeyName])
-            onSearch(results[highlightedItem][resultStringKeyName], results)
+            onSearch(results[highlightedItem][resultStringKeyName], results, event.keyCode)
           } else {
-            onSearch(searchString, results)
+            onSearch(searchString, results, event.keyCode)
           }
           setHighlightedItem(-1)
           eraseResults()
