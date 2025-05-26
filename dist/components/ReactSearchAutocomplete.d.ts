@@ -1,0 +1,32 @@
+import { default as Fuse } from 'fuse.js';
+import { FocusEventHandler } from 'react';
+import { DefaultTheme } from '../config/config';
+export declare const DEFAULT_INPUT_DEBOUNCE = 200;
+export declare const MAX_RESULTS = 10;
+export interface ReactSearchAutocompleteProps<T> {
+    items: T[];
+    disableFuse?: boolean;
+    fuseOptions?: Fuse.IFuseOptions<T>;
+    inputDebounce?: number;
+    onSearch?: (keyword: string, results: T[], keyCode: number) => void;
+    onHover?: (result: T) => void;
+    onSelect?: (result: T) => void;
+    onFocus?: FocusEventHandler<HTMLInputElement>;
+    onClear?: Function;
+    showIcon?: boolean;
+    showClear?: boolean;
+    maxResults?: number;
+    placeholder?: string;
+    autoFocus?: boolean;
+    styling?: DefaultTheme;
+    resultStringKeyName?: string;
+    inputSearchString?: string;
+    formatResult?: Function;
+    hideResultsOnBlur?: boolean;
+    showNoResults?: boolean;
+    showNoResultsText?: string;
+    showItemsOnFocus?: boolean;
+    maxLength?: number;
+    className?: string;
+}
+export default function ReactSearchAutocomplete<T>({ items, disableFuse, fuseOptions, inputDebounce, onSearch, onHover, onSelect, onFocus, onClear, showIcon, showClear, maxResults, placeholder, autoFocus, styling, resultStringKeyName, inputSearchString, formatResult, hideResultsOnBlur, showNoResults, showNoResultsText, showItemsOnFocus, maxLength, className }: ReactSearchAutocompleteProps<T>): JSX.Element;
